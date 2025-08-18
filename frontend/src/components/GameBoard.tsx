@@ -16,7 +16,7 @@ export default function GameBoard({
 	animatedRows,
 }: Props) {
 	return (
-		<div className="flex flex-col gap-2">
+		<div className="flex flex-col gap-1 sm:gap-2 items-center">
 			{guesses.map((guess, i) => (
 				<Line
 					key={i}

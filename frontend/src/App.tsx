@@ -19,7 +19,7 @@ function App() {
 	} = useWordle();
 
 	return (
-		<main className="flex flex-col items-center justify-center h-full w-full p-5">
+		<main className="flex flex-col items-center justify-start min-h-screen w-full px-3 py-4 sm:p-5 sm:py-6">
 			<Controls
 				word={word}
 				showAnswer={showAnswer}
@@ -29,7 +29,9 @@ function App() {
 				handleReplay={handleReplay}
 			/>
 
-			<h1 className="text-4xl py-10 font-semibold">Welcome to free-wordle</h1>
+			<h1 className="text-2xl sm:text-4xl py-6 sm:py-10 font-semibold text-center">
+				Welcome to open-wordle
+			</h1>
 
 			<GameBoard
 				guesses={guesses}
@@ -40,7 +42,7 @@ function App() {
 			/>
 
 			{win && (
-				<div className="won text-2xl p-2 m-3 bg-green-500 rounded-lg text-white">
+				<div className="won text-lg sm:text-2xl p-1 sm:p-3 m-3 sm:m-4 bg-green-500 rounded-lg text-white text-center">
 					Congrats, You Guessed it correctly!!
 				</div>
 			)}
