@@ -3,7 +3,7 @@ import cors from "cors";
 import wordRoutes from "./routes/word.js";
 
 const app = express();
-const PORT = 3500;
+const PORT = process.env.PORT || 3500;
 
 app.use(cors());
 
