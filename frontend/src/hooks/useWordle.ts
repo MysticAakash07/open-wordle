@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 
 const WORD_LENGTH = 5;
+const API_URL = import.meta.env.VITE_API_URL;
 
 export function useWordle() {
 	const [word, setWord] = useState("");
@@ -72,7 +73,7 @@ export function useWordle() {
 	// Fetch new word
 	useEffect(() => {
 		const getWord = async () => {
-			const res = await fetch("http://localhost:3500/word");
+			const res = await fetch(`${API_URL}/word`);
 			const data = await res.json();
 			const ans = data.word.toUpperCase();
 			setWord(ans);
