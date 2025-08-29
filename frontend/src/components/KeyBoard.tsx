@@ -17,7 +17,7 @@ const KeyBoard = ({ onKeyClick }: KeyBoardProps) => {
 						<button
 							key={key}
 							onClick={() => onKeyClick(key)}
-							className={`px-1 py-0.5 sm:px-4 sm:py-2 rounded-md shadow-sm font-semibold text-sm sm:text-md
+							className={`px-2 py-1 sm:px-4 sm:py-2 rounded-md shadow-sm font-semibold text-sm sm:text-md
 							 ${
 									key === "Enter"
 										? "bg-green-400 active:bg-green-500"
