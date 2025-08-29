@@ -1,6 +1,7 @@
 import { useWordle } from "./hooks/useWordle";
 import GameBoard from "./components/GameBoard";
 import Controls from "./components/Controls";
+import KeyBoard from "./components/KeyBoard";
 
 function App() {
 	const {
@@ -12,11 +13,21 @@ function App() {
 		win,
 		animatedRows,
 		showAnswer,
+		loading,
 		setShowAnswer,
 		hintLetter,
 		setHintLetter,
 		handleReplay,
+		handleKey,
 	} = useWordle();
+
+	if (loading) {
+		return (
+			<div className="flex justify-center items-center h-screen">
+				<p className="text-lg">Warming up the server... please wait ⏳</p>
+			</div>
+		);
+	}
 
 	return (
 		<main className="flex flex-col items-center justify-start min-h-screen w-full px-3 py-4 sm:p-5 sm:py-6">
@@ -46,6 +57,15 @@ function App() {
 					Congrats, You Guessed it correctly!!
 				</div>
 			)}
+
+			{/* Show answer if user toggles it */}
+			{/* {showAnswer && word && (
+				<div className="answer mt-4 text-lg sm:text-xl text-gray-700">
+					The word was: <span className="font-bold">{word}</span>
+				</div>
+			)} */}
+
+			<KeyBoard onKeyClick={handleKey} />
 		</main>
 	);
 }

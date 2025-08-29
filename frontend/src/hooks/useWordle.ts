@@ -13,6 +13,7 @@ export function useWordle() {
 	const [currentGuess, setCurrentGuess] = useState("");
 	const [win, setWin] = useState(false);
 	const [replay, setReplay] = useState(0);
+	const [loading, setLoading] = useState(true);
 
 	// NEW: track animation for each row
 	const [animatedRows, setAnimatedRows] = useState<boolean[]>(
@@ -57,6 +58,45 @@ export function useWordle() {
 		return res;
 	};
 
+	const handleKey = (key: string) => {
+		if (win) return;
+		key = key.toUpperCase();
+
+		if (/^[A-Z]$/.test(key)) {
+			if (currentGuess.length < WORD_LENGTH) {
+				setCurrentGuess((prev) => prev + key);
+			}
+		}
+		if (key === "BACKSPACE") {
+			setCurrentGuess((prev) => prev.slice(0, -1));
+		}
+		if (key === "ENTER") {
+			if (currentGuess.length === WORD_LENGTH) {
+				if (currentGuess === word) setWin(true);
+
+				const rowColors = checkGuess(currentGuess);
+
+				const newGuesses = [...guesses];
+				newGuesses[currentRow] = currentGuess;
+
+				const newColors = [...colors];
+				newColors[currentRow] = rowColors;
+
+				setGuesses(newGuesses);
+				setColors(newColors);
+
+				setAnimatedRows((prev) => {
+					const copy = [...prev];
+					copy[currentRow] = true;
+					return copy;
+				});
+
+				setCurrentRow((prev) => prev + 1);
+				setCurrentGuess("");
+			}
+		}
+	};
+
 	const handleReplay = () => {
 		setWord("");
 		setGuesses(Array(6).fill(""));
@@ -73,11 +113,18 @@ export function useWordle() {
 	// Fetch new word
 	useEffect(() => {
 		const getWord = async () => {
-			const res = await fetch(`${API_URL}/word`);
-			const data = await res.json();
-			const ans = data.word.toUpperCase();
-			setWord(ans);
-			makeLetterMap(ans);
+			setLoading(true);
+			try {
+				const res = await fetch(`${API_URL}/word`);
+				const data = await res.json();
+				const ans = data.word.toUpperCase();
+				setWord(ans);
+				makeLetterMap(ans);
+			} catch (err) {
+				console.error("Failed to fetch word:", err);
+			} finally {
+				setLoading(false);
+			}
 		};
 		getWord();
 	}, [replay]);
@@ -85,45 +132,8 @@ export function useWordle() {
 	// Handle key presses
 	useEffect(() => {
 		const handleKeyDown = (e: globalThis.KeyboardEvent) => {
-			if (win) return;
-			const key = e.key.toUpperCase();
-
-			if (/^[A-Z]$/.test(key)) {
-				if (currentGuess.length < 5) {
-					setCurrentGuess((prev) => prev + key);
-				}
-			}
-			if (key === "BACKSPACE") {
-				setCurrentGuess((prev) => prev.slice(0, -1));
-			}
-			if (key === "ENTER") {
-				if (currentGuess.length === 5) {
-					if (currentGuess === word) setWin(true);
-
-					const rowColors = checkGuess(currentGuess);
-
-					const newGuesses = [...guesses];
-					newGuesses[currentRow] = currentGuess;
-
-					const newColors = [...colors];
-					newColors[currentRow] = rowColors;
-
-					setGuesses(newGuesses);
-					setColors(newColors);
-
-					// trigger animation for this row
-					setAnimatedRows((prev) => {
-						const copy = [...prev];
-						copy[currentRow] = true;
-						return copy;
-					});
-
-					setCurrentRow((prev) => prev + 1);
-					setCurrentGuess("");
-				}
-			}
+			handleKey(e.key);
 		};
-
 		window.addEventListener("keydown", handleKeyDown);
 		return () => window.removeEventListener("keydown", handleKeyDown);
 	}, [guesses, colors, currentGuess, currentRow, win, word]);
@@ -137,9 +147,11 @@ export function useWordle() {
 		win,
 		animatedRows,
 		showAnswer,
+		loading,
 		setShowAnswer,
 		hintLetter,
 		setHintLetter,
 		handleReplay,
+		handleKey,
 	};
 }
