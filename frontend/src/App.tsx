@@ -2,6 +2,7 @@ import { useWordle } from "./hooks/useWordle";
 import GameBoard from "./components/GameBoard";
 import Controls from "./components/Controls";
 import KeyBoard from "./components/KeyBoard";
+import { useEffect } from "react";
 
 function App() {
 	const {
@@ -20,6 +21,16 @@ function App() {
 		handleReplay,
 		handleKey,
 	} = useWordle();
+
+	useEffect(() => {
+		if (!loading) return; // only set timer if loading
+		const timeout = setTimeout(() => {
+			console.warn("Reloading page after 20s of loading...");
+			window.location.reload();
+		}, 20000); // 20 sec
+
+		return () => clearTimeout(timeout); // cleanup if loading resolves earlier
+	}, [loading]);
 
 	if (loading) {
 		return (
