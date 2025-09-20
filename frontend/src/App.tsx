@@ -27,7 +27,7 @@ function App() {
 		const timeout = setTimeout(() => {
 			console.warn("Reloading page after 20s of loading...");
 			window.location.reload();
-		}, 20000); // 20 sec
+		}, 15000); // 15 sec
 
 		return () => clearTimeout(timeout); // cleanup if loading resolves earlier
 	}, [loading]);
